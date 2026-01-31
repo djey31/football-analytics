@@ -5,16 +5,14 @@ Université de Marseille
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://football-analytics-final-exam-26.streamlit.app/)
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
-[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Github Link
+## Lien Github 
 https://github.com/djey31/football-analytics
 
 ## 🐳 Docker Hub
 Image disponible sur : https://hub.docker.com/r/djey31/football-analytics
 
-## Run the container
+## Run the container (pour Docker)
 ```bash
 # Clone the repository
 git clone https://github.com/djey31/football-analytics.git
@@ -55,7 +53,7 @@ Développer une **application logicielle complète** permettant :
 A destination du professeur : 2fe021622649492f893588cfd2889dec
 ---
 
-## 🧩 Description Générale
+## Description Générale
 
 **Football Analytics Pro Dashboard** est une application Streamlit utilisant l’API  
 **Football-Data.org (REST API v4)** pour fournir :
@@ -94,6 +92,7 @@ A destination du professeur : 2fe021622649492f893588cfd2889dec
   - forme récente
   - buts marqués / encaissés
 - Interface conversationnelle simple
+- L'analyse du chatbot n'est pas basé sur l'IA
 
 ### 📈 Visualisation de Données
 - Graphiques interactifs (Plotly)
