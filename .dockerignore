@@ -1,0 +1,18 @@
+# Environnements
+venv/
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# Git
+.git
+.gitignore
+
+# OS
+.DS_Store
+
+# Data / logs (si pas nécessaires au runtime)
+data/
+*.log
