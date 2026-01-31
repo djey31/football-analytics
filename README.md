@@ -49,7 +49,7 @@ Développer une **application logicielle complète** permettant :
 - l’exploitation d’une **API REST externe**,
 - la visualisation interactive de données,
 - le déploiement d’une application **reproductible et containerisée**.
-### Clé Api
+### Clé Api (10 requetes par min)
 A destination du professeur : 2fe021622649492f893588cfd2889dec
 ---
 
