@@ -11,6 +11,26 @@ Université de Marseille
 ## 🐳 Docker Hub
 Image disponible sur : https://hub.docker.com/r/djey31/football-analytics
 
+## Run the container
+```bash
+# Clone the repository
+git clone https://github.com/djey31/football-analytics.git
+cd football-analytics
+
+# Configure environment variables
+cp .env.example .env
+# Edit .env and add your API key
+# FOOTBALL_DATA_API_KEY=your_api_key_here
+
+# Build and run the application with Docker Compose
+docker compose up --build
+
+# Open the application in your browser
+# http://localhost:8501
+
+# Stop the application
+docker compose down
+```
 ---
 
 ## 👥 Membres du Groupe
