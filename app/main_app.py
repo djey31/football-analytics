@@ -1367,7 +1367,7 @@ def display_analysis_tab(df):
             st.plotly_chart(fig4, use_container_width=True)
 
 def display_chatbot_tab(chatbot, client, comp_info, standings_data, df):
-    """Affiche l'onglet Chatbot"""
+    """Affiche l'onglet Chatbot - Version corrigée pour Streamlit Cloud"""
     st.subheader("🤖 Assistant Football Analytics")
     st.caption("Posez des questions sur le championnat ou demandez des prédictions de matchs")
     
@@ -1399,49 +1399,51 @@ def display_chatbot_tab(chatbot, client, comp_info, standings_data, df):
         team2_options = [team['team'] for team in standings_data if team['team'] != team1]
         team2 = st.selectbox("Équipe 2", team2_options, key="pred_team2")
     
-    if st.button("🔮 Prédire le résultat", use_container_width=True):
-        with st.spinner("Analyse en cours..."):
-            prediction = chatbot.predict_next_match(team1, team2, standings_data)
-            
-            if prediction:
-                st.markdown('<div class="prediction-card">', unsafe_allow_html=True)
-                st.markdown(f"### ⚽ {team1} vs {team2}")
+    # Utiliser un formulaire pour la prédiction aussi
+    with st.form(key="prediction_form"):
+        if st.form_submit_button("🔮 Prédire le résultat", use_container_width=True):
+            with st.spinner("Analyse en cours..."):
+                prediction = chatbot.predict_next_match(team1, team2, standings_data)
                 
-                # Affichage des probabilités
-                col_proba1, col_proba2, col_proba3 = st.columns(3)
-                with col_proba1:
-                    st.metric(f"{team1}", f"{prediction['probabilities']['team1']}%")
-                with col_proba2:
-                    st.metric("Match nul", f"{prediction['probabilities']['draw']}%")
-                with col_proba3:
-                    st.metric(f"{team2}", f"{prediction['probabilities']['team2']}%")
-                
-                # Pronostic
-                st.success(f"**Pronostic :** {prediction['prediction']}")
-                
-                # Détails des statistiques
-                with st.expander("📊 Voir les statistiques détaillées"):
-                    st.write(f"**Statistiques de {team1}:**")
-                    st.write(f"- Points: {prediction['team1_stats']['points']}")
-                    st.write(f"- Taux de victoire: {prediction['team1_stats']['win_rate']:.1f}%")
-                    st.write(f"- Buts/match: {prediction['team1_stats']['goals_for_per_match']:.2f}")
-                    st.write(f"- Buts encaissés/match: {prediction['team1_stats']['goals_against_per_match']:.2f}")
+                if prediction:
+                    st.markdown('<div class="prediction-card">', unsafe_allow_html=True)
+                    st.markdown(f"### ⚽ {team1} vs {team2}")
                     
-                    st.write(f"**Statistiques de {team2}:**")
-                    st.write(f"- Points: {prediction['team2_stats']['points']}")
-                    st.write(f"- Taux de victoire: {prediction['team2_stats']['win_rate']:.1f}%")
-                    st.write(f"- Buts/match: {prediction['team2_stats']['goals_for_per_match']:.2f}")
-                    st.write(f"- Buts encaissés/match: {prediction['team2_stats']['goals_against_per_match']:.2f}")
-                
-                st.markdown('</div>', unsafe_allow_html=True)
-                
-                # Ajouter à l'historique
-                st.session_state.chat_history.append({
-                    "role": "assistant",
-                    "content": f"Prédiction pour {team1} vs {team2} : {prediction['prediction']} (Probabilités: {team1} {prediction['probabilities']['team1']}%, Nul {prediction['probabilities']['draw']}%, {team2} {prediction['probabilities']['team2']}%)"
-                })
-            else:
-                st.error("Impossible de faire une prédiction pour ces équipes.")
+                    # Affichage des probabilités
+                    col_proba1, col_proba2, col_proba3 = st.columns(3)
+                    with col_proba1:
+                        st.metric(f"{team1}", f"{prediction['probabilities']['team1']}%")
+                    with col_proba2:
+                        st.metric("Match nul", f"{prediction['probabilities']['draw']}%")
+                    with col_proba3:
+                        st.metric(f"{team2}", f"{prediction['probabilities']['team2']}%")
+                    
+                    # Pronostic
+                    st.success(f"**Pronostic :** {prediction['prediction']}")
+                    
+                    # Détails des statistiques
+                    with st.expander("📊 Voir les statistiques détaillées"):
+                        st.write(f"**Statistiques de {team1}:**")
+                        st.write(f"- Points: {prediction['team1_stats']['points']}")
+                        st.write(f"- Taux de victoire: {prediction['team1_stats']['win_rate']:.1f}%")
+                        st.write(f"- Buts/match: {prediction['team1_stats']['goals_for_per_match']:.2f}")
+                        st.write(f"- Buts encaissés/match: {prediction['team1_stats']['goals_against_per_match']:.2f}")
+                        
+                        st.write(f"**Statistiques de {team2}:**")
+                        st.write(f"- Points: {prediction['team2_stats']['points']}")
+                        st.write(f"- Taux de victoire: {prediction['team2_stats']['win_rate']:.1f}%")
+                        st.write(f"- Buts/match: {prediction['team2_stats']['goals_for_per_match']:.2f}")
+                        st.write(f"- Buts encaissés/match: {prediction['team2_stats']['goals_against_per_match']:.2f}")
+                    
+                    st.markdown('</div>', unsafe_allow_html=True)
+                    
+                    # Ajouter à l'historique
+                    st.session_state.chat_history.append({
+                        "role": "assistant",
+                        "content": f"Prédiction pour {team1} vs {team2} : {prediction['prediction']} (Probabilités: {team1} {prediction['probabilities']['team1']}%, Nul {prediction['probabilities']['draw']}%, {team2} {prediction['probabilities']['team2']}%)"
+                    })
+                else:
+                    st.error("Impossible de faire une prédiction pour ces équipes.")
     
     # Interface de chat textuel
     st.markdown("---")
@@ -1485,69 +1487,108 @@ def display_chatbot_tab(chatbot, client, comp_info, standings_data, df):
                     "content": formatted_response
                 })
             
-            # Forcer le rafraîchissement pour afficher la nouvelle réponse
-            st.rerun()
+            # NE PAS utiliser st.rerun() ici - Streamlit se recharge automatiquement
     
     # Boutons de questions rapides - dans des colonnes séparées pour éviter les conflits
     st.markdown("**Questions rapides:**")
     
-    # Utiliser des callbacks pour les boutons de questions rapides
-    if 'quick_question' not in st.session_state:
-        st.session_state.quick_question = None
-    
+    # Créer des colonnes pour les boutons de questions rapides
     col_qr1, col_qr2, col_qr3 = st.columns(3)
     
     with col_qr1:
         if st.button("Classement ?", use_container_width=True, key="btn_classement"):
-            st.session_state.quick_question = "Quel est le classement ?"
+            question = "Quel est le classement ?"
+            
+            # Ajouter la question à l'historique
+            st.session_state.chat_history.append({
+                "role": "user",
+                "content": question
+            })
+            
+            # Obtenir une réponse
+            with st.spinner("Recherche..."):
+                matches_data = client.fetch_matches(comp_info['code'], "SCHEDULED", 3)
+                response = chatbot.answer_question(question, standings_data, matches_data)
+                
+                # Formater la réponse
+                response_lines = response.split('\n')
+                formatted_response = ""
+                for line in response_lines:
+                    if line.startswith("❌") or line.startswith("🤖") or line.startswith("📋") or line.startswith("📊") or line.startswith("🏆") or line.startswith("⚽") or line.startswith("📅") or line.startswith("🔮") or line.startswith("👋") or line.startswith("📚") or line.startswith("⚡") or line.startswith("🛡️") or line.startswith("🏅"):
+                        formatted_response += f"**{line}**\n"
+                    else:
+                        formatted_response += f"{line}\n"
+                
+                # Ajouter la réponse à l'historique
+                st.session_state.chat_history.append({
+                    "role": "assistant",
+                    "content": formatted_response
+                })
     
     with col_qr2:
         if st.button("Prochains matchs ?", use_container_width=True, key="btn_matchs"):
-            st.session_state.quick_question = "Quels sont les prochains matchs ?"
+            question = "Quels sont les prochains matchs ?"
+            
+            # Ajouter la question à l'historique
+            st.session_state.chat_history.append({
+                "role": "user",
+                "content": question
+            })
+            
+            # Obtenir une réponse
+            with st.spinner("Recherche..."):
+                matches_data = client.fetch_matches(comp_info['code'], "SCHEDULED", 3)
+                response = chatbot.answer_question(question, standings_data, matches_data)
+                
+                # Formater la réponse
+                response_lines = response.split('\n')
+                formatted_response = ""
+                for line in response_lines:
+                    if line.startswith("❌") or line.startswith("🤖") or line.startswith("📋") or line.startswith("📊") or line.startswith("🏆") or line.startswith("⚽") or line.startswith("📅") or line.startswith("🔮") or line.startswith("👋") or line.startswith("📚") or line.startswith("⚡") or line.startswith("🛡️") or line.startswith("🏅"):
+                        formatted_response += f"**{line}**\n"
+                    else:
+                        formatted_response += f"{line}\n"
+                
+                # Ajouter la réponse à l'historique
+                st.session_state.chat_history.append({
+                    "role": "assistant",
+                    "content": formatted_response
+                })
     
     with col_qr3:
         if st.button("Aide", use_container_width=True, key="btn_aide"):
-            st.session_state.quick_question = "Aide"
-    
-    # Traiter la question rapide si définie
-    if st.session_state.quick_question:
-        question = st.session_state.quick_question
-        
-        # Ajouter la question à l'historique
-        st.session_state.chat_history.append({
-            "role": "user",
-            "content": question
-        })
-        
-        # Obtenir une réponse
-        with st.spinner("Recherche..."):
-            matches_data = client.fetch_matches(comp_info['code'], "SCHEDULED", 3)
-            response = chatbot.answer_question(question, standings_data, matches_data)
+            question = "Aide"
             
-            # Formater la réponse
-            response_lines = response.split('\n')
-            formatted_response = ""
-            for line in response_lines:
-                if line.startswith("❌") or line.startswith("🤖") or line.startswith("📋") or line.startswith("📊") or line.startswith("🏆") or line.startswith("⚽") or line.startswith("📅") or line.startswith("🔮") or line.startswith("👋") or line.startswith("📚") or line.startswith("⚡") or line.startswith("🛡️") or line.startswith("🏅"):
-                    formatted_response += f"**{line}**\n"
-                else:
-                    formatted_response += f"{line}\n"
-            
-            # Ajouter la réponse à l'historique
+            # Ajouter la question à l'historique
             st.session_state.chat_history.append({
-                "role": "assistant",
-                "content": formatted_response
+                "role": "user",
+                "content": question
             })
-        
-        # Réinitialiser la question rapide
-        st.session_state.quick_question = None
-        st.rerun()
+            
+            # Obtenir une réponse
+            with st.spinner("Recherche..."):
+                matches_data = client.fetch_matches(comp_info['code'], "SCHEDULED", 3)
+                response = chatbot.answer_question(question, standings_data, matches_data)
+                
+                # Formater la réponse
+                response_lines = response.split('\n')
+                formatted_response = ""
+                for line in response_lines:
+                    if line.startswith("❌") or line.startswith("🤖") or line.startswith("📋") or line.startswith("📊") or line.startswith("🏆") or line.startswith("⚽") or line.startswith("📅") or line.startswith("🔮") or line.startswith("👋") or line.startswith("📚") or line.startswith("⚡") or line.startswith("🛡️") or line.startswith("🏅"):
+                        formatted_response += f"**{line}**\n"
+                    else:
+                        formatted_response += f"{line}\n"
+                
+                # Ajouter la réponse à l'historique
+                st.session_state.chat_history.append({
+                    "role": "assistant",
+                    "content": formatted_response
+                })
     
     # Bouton pour effacer l'historique
     if st.button("🧹 Effacer l'historique", use_container_width=True, key="btn_clear"):
         st.session_state.chat_history = []
-        st.session_state.quick_question = None
-        st.rerun()
+        # Streamlit se recharge automatiquement
 
 # =====================================================
 # LOGIQUE PRINCIPALE
