@@ -1,7 +1,7 @@
 # ⚽ Football Analytics Pro Dashboard
 
 Projet académique réalisé dans le cadre du **Master 2 Software – Année 2025-2026**  
-Université de Marseille
+Université de Aix-Marseille
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://football-analytics-final-exam-26.streamlit.app/)
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
